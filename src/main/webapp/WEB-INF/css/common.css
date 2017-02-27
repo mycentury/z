@@ -1,0 +1,17 @@
+@CHARSET "UTF-8";
+
+body{
+	margin-top: 70px;
+	margin-bottom: 200px;
+}
+
+ul.list{
+	list-style: none;
+	padding-left: 0px;
+}
+
+canvas {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}

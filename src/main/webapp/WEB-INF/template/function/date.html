@@ -1,0 +1,50 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<div th:include="/common/meta :: meta" th:remove="tag"></div>
+	<title th:utext="#{app.name}"></title>
+</head>
+<body th:with="menu='FUNCTION',subMenu='FUNCTION_DATE'" th:inline="text">
+
+	<!-- BEGIN HEADER -->
+	<div th:include="/common/header :: header" th:remove="tag"></div>
+	<!-- END HEADER -->
+	
+	<div class="container">
+		
+	</div>
+
+	<!-- <div th:include="/common/slider_window :: slider_window" th:remove="tag"></div> -->
+	
+	<!-- BEGIN CSS_JS -->
+	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
+	<!-- END CSS_JS -->
+	<div th:include="/common/footer :: footer" th:remove="tag"></div>
+	<script type="text/javascript" th:inline="javascript">
+		var color = Chart.helpers.color;
+		var red = {
+			labels : /*[[${redBallLabels}]]*/ null,
+			datasets : [
+					{
+						label : "red",
+						backgroundColor : color(window.chartColors.red).alpha(0.5)
+								.rgbString(),
+						data : /*[[${countRedBalls}]]*/ null
+					}]
+		};
+		var blue = {
+				labels : /*[[${blueBallLabels}]]*/ null,
+				datasets : [
+						{
+							label : "blue",
+							backgroundColor : color(window.chartColors.blue).alpha(0.5)
+									.rgbString(),
+							data : /*[[${countBlueBalls}]]*/ null
+						}]
+			};
+		getBarChart("red", red,"红球");
+		getBarChart("blue", blue,"蓝球");
+	</script>
+</body>
+</html>
