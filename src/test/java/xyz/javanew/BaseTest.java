@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @Date 2016年6月20日
  * @ClassName BaseTest
  */
-@ContextConfiguration(locations = { "classpath:spring/spring-context.xml", "classpath:spring/springmvc-servlet.xml",
-		"classpath:spring/spring-mongodb.xml" })
+@ContextConfiguration(locations = { "classpath:spring/spring-context.xml", "classpath:spring/spring-message.xml",
+		"classpath:spring/springmvc-servlet.xml", "classpath:spring/spring-mongodb.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
 public abstract class BaseTest extends AbstractJUnit4SpringContextTests {

@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import xyz.javanew.repository.mongodb.entity.CommonRegularEntity;
 import xyz.javanew.repository.mongodb.entity.MenuEntity;
 
 @Service
@@ -60,9 +61,50 @@ public class InitService {
 		entity.setSubMenus(subMenus);
 		menuEntities.add(entity);
 
+		daoService.delete(null, MenuEntity.class);
 		daoService.insert(menuEntities, MenuEntity.class);
 	}
 
-	public void initTasks() {
+	public void initCommonRegulars() {
+		List<CommonRegularEntity> entities = new ArrayList<CommonRegularEntity>();
+		CommonRegularEntity entity = null;
+		//
+		entity = new CommonRegularEntity();
+		entity.setName("手机号");
+		entity.setExpression("(13\\d|14[57]|15[^4,\\D]|17[678]|18\\d)\\d{8}|170[059]\\d{7}");
+		entities.add(entity);
+		//
+		entity = new CommonRegularEntity();
+		entity.setName("邮箱");
+		entity.setExpression("\\w[-\\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\\.)+[A-Za-z]{2,14}");
+		entities.add(entity);
+		//
+		entity = new CommonRegularEntity();
+		entity.setName("身份证");
+		entity.setExpression("\\d{15}|\\d{17}[0-9Xx]");
+		entities.add(entity);
+		//
+		entity = new CommonRegularEntity();
+		entity.setName("中文");
+		entity.setExpression("[\\u4e00-\\u9fa5]");
+		entities.add(entity);
+		//
+		entity = new CommonRegularEntity();
+		entity.setName("时间(hh:mm:ss)");
+		entity.setExpression("([01]?\\d|2[0-3]):[0-5]?\\d:[0-5]?\\d");
+		entities.add(entity);
+		//
+		entity = new CommonRegularEntity();
+		entity.setName("整数");
+		entity.setExpression("^-?[1-9]\\d*|0$");
+		entities.add(entity);
+
+		entity = new CommonRegularEntity();
+		entity.setName("小数");
+		entity.setExpression("^-?[1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*$");
+		entities.add(entity);
+		//
+		daoService.delete(null, CommonRegularEntity.class);
+		daoService.insert(entities, CommonRegularEntity.class);
 	}
 }

@@ -12,7 +12,23 @@
 	<!-- END HEADER -->
 	
 	<div class="container">
-		敬请不要期待！
+		<div>
+			<h4>正则表达式生成器</h4>
+			<table th:if="${not #lists.isEmpty(commonRegulars)}" class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<td>常用校验信息</td>
+						<td>正则表达式</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="item:${commonRegulars}">
+						<td th:utext="${item.name}"></td>
+						<td th:utext="${item.expression}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 
 	<!-- BEGIN CSS_JS -->

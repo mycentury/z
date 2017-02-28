@@ -27,4 +27,23 @@ public class InitServiceTest extends BaseTest {
 		initService.initMenus();
 	}
 
+	/**
+	 * Test method for {@link xyz.javanew.service.InitService#initCommonRegulars()}.
+	 */
+	@Test
+	public void testInitCommonRegulars() {
+		initService.initCommonRegulars();
+	}
+
+	@Test
+	public void test() {
+		long millis = System.currentTimeMillis();
+		System.out.println(millis);
+		long millisecond = millis % 1000;
+		long second = millis / 1000;
+		long minute = millis / 1000 / 60;
+		long hour = millis / 1000 / 60 / 60;
+		long date = millis / 1000 / 60 / 60;
+		System.out.println(millis);
+	}
 }
