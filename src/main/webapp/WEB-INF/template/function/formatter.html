@@ -1,0 +1,162 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:include="/common/meta :: meta" th:remove="tag"></div>
+<title th:utext="#{app.name}"></title>
+</head>
+<body th:with="menu='FUNCTION',subMenu='FUNCTION_FORMATTER'" th:inline="text">
+
+	<!-- BEGIN HEADER -->
+	<div th:include="/common/header :: header" th:remove="tag"></div>
+	<!-- END HEADER -->
+
+	<div class="container">
+		<div>
+			<h4>格式化数据格式化<a href="/function/oschina" target="_blank">oschina上提供的格式化</a></h4>
+			<p>提示：目前只支持Json</p>
+			<p id="validate_result"></p>
+			<div class="input-group col-lg-12">
+				<textarea id="source" class="form-control" rows="30" draggable="false" style="resize :none;" ></textarea>
+				<span class="input-group-addon" onclick="format();">
+					<i class="glyphicon glyphicon-random"></i>
+				</span>
+				<textarea id="dest" readonly="readonly" class="form-control" rows="30" draggable="false" style="cursor: default;resize :none;"></textarea>
+			</div>
+		</div>
+	</div>
+
+	<!-- <div th:include="/common/slider_window :: slider_window" th:remove="tag"></div> -->
+
+	<!-- BEGIN CSS_JS -->
+	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
+	<!-- END CSS_JS -->
+	<div th:include="/common/footer :: footer" th:remove="tag"></div>
+	<script type="text/javascript" th:inline="javascript">
+		function format() {
+			var source = $("#source").val();
+			general_ajax("/function/format", "POST", {source : source}, null, function(result){
+				if (get_type(result) == "[object String]") {
+					result = json_parse(result);
+				}
+				$("#dest").val(result.data);
+				$("#validate_result").html(result.message);
+				$("#validate_result").css("color",result.status==200?"green":"red");
+			}, null, null);
+			$("#validate_result").html("正在解析。。。");
+			$("#dest").val("");
+		}
+		
+		function formatByJs(tab, tabCount,isKey,addQuote,highLight){
+			var source = $("#source").val();
+			if (source == ""){
+				source = "\"\"";
+			}
+			var sourceObj = eval("[" + source + "]");
+			return parseObject(obj, tab,tabCount, false, false, isKey, addQuote,highLight);
+		}
+		
+		function parseObject(obj, tab, tabCount,addComma, isArray, isKey,addQuote,highLight) {
+			var comma = addComma ? "," : "";
+			var quote = addQuote ? "\"" : "";
+			var formatJson = "";
+			var type = typeof obj;
+			if (isArray(obj)) {
+				if (obj.length == 0) {
+					formatJson += "[]";
+				} else {
+					formatJson += "[";
+					for (var i = 0; i < obj.length; i++) {
+						html += ProcessObject(obj[i],tab,  tabCount + 1, i < (obj.length - 1),
+								true, false, addQuote);
+					}
+					clpsHtml = window.IsCollapsible ? "</span>" : "";
+					html += GetRow(indent, clpsHtml
+							+ "<span class='ArrayBrace'>]</span>" + comma);
+				}
+			} else if (type == 'object') {
+				if (obj == null) {
+					html += FormatLiteral("null", "", comma, indent, isArray, "Null");
+				} else if (obj.constructor == window._dateObj.constructor) {
+					html += FormatLiteral("new Date(" + obj.getTime() + ") /*"
+							+ obj.toLocaleString() + "*/", "", comma, indent, isArray,
+							"Date");
+				} else if (obj.constructor == window._regexpObj.constructor) {
+					html += FormatLiteral("new RegExp(" + obj + ")", "", comma, indent,
+							isArray, "RegExp");
+				} else {
+					var numProps = 0;
+					for ( var prop in obj)
+						numProps++;
+					if (numProps == 0) {
+						html += GetRow(indent, "<span class='ObjectBrace'>{ }</span>"
+								+ comma, isPropertyContent);
+					} else {
+						clpsHtml = window.IsCollapsible ? "<span><img src=\""
+								+ window.expandedImg
+								+ "\" onClick=\"ExpImgClicked(this)\" /></span><span class='collapsible'>"
+								: "";
+						html += GetRow(indent, "<span class='ObjectBrace'>{</span>"
+								+ clpsHtml, isPropertyContent);
+
+						var j = 0;
+
+						for ( var prop in obj) {
+							html += GetRow(indent + 1, "<span class='PropertyName'>"
+									+ quote
+									+ prop
+									+ quote
+									+ "</span>: "
+									+ ProcessObject(obj[prop], indent + 1,
+											++j < numProps, false, true));
+						}
+
+						clpsHtml = window.IsCollapsible ? "</span>" : "";
+
+						html += GetRow(indent, clpsHtml
+								+ "<span class='ObjectBrace'>}</span>" + comma);
+
+					}
+				}
+			} else if (type == 'number') {
+				html += FormatLiteral(obj, "", comma, indent, isArray, "Number");
+			} else if (type == 'boolean') {
+				html += FormatLiteral(obj, "", comma, indent, isArray, "Boolean");
+			} else if (type == 'function') {
+				if (obj.constructor == window._regexpObj.constructor) {
+					html += FormatLiteral("new RegExp(" + obj + ")", "", comma, indent,
+							isArray, "RegExp");
+				} else {
+					obj = FormatFunction(indent, obj);
+					html += FormatLiteral(obj, "", comma, indent, isArray, "Function");
+				}
+			} else if (type == 'undefined') {
+				html += FormatLiteral("undefined", "", comma, indent, isArray, "Null");
+			} else {
+				html += FormatLiteral(obj.toString().split("\\").join("\\\\")
+						.split('"').join('\\"'), "\"", comma, indent, isArray, "String");
+			}
+			return html;
+		}
+		
+		function multiplyString(num, str) {
+			var array = [];
+			for (var i = 0; i < num; i++) {
+				array.push(str);
+			}
+			return array.join("");
+		}
+		
+		function isArray(obj) {
+			return obj && typeof obj === 'object' && typeof obj.length === 'number'
+					&& !(obj.propertyIsEnumerable('length'));
+		}
+
+		function getRow(tabs,data) {
+			if (data != null && data.length > 0 && data.charAt(data.length - 1) != "\n")
+				data = data + "\n";
+			return tabs + data;
+		}
+	</script>
+</body>
+</html>

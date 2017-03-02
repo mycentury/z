@@ -3,8 +3,6 @@
  */
 package xyz.javanew.util;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.lang.reflect.Type;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,7 +10,8 @@ import java.util.regex.Pattern;
 import org.springframework.util.StringUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 /**
  * @Desc
@@ -36,55 +35,14 @@ public class GsonUtil {
 		return gson.toJson(obj);
 	}
 
-	public static void readJson(String sourceJson) {
-		if (StringUtils.isEmpty(sourceJson)) {
-			return;
-		}
-		boolean isArray = sourceJson.startsWith("[");
-		StringReader stringReader = null;
-		JsonReader jsonReader = null;
+	public static JsonElement readJson(String sourceJson) {
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = null;
 		try {
-			stringReader = new StringReader(sourceJson);
-			jsonReader = new JsonReader(stringReader);
-			if (isArray) {
-				jsonReader.beginArray();
-			} else {
-				jsonReader.beginObject();
-			}
-			while (jsonReader.hasNext()) {
-				String key = jsonReader.nextName();
-				Object value = null;
-				try {
-					value = jsonReader.nextString();
-					System.out.println(key + "," + value);
-				} catch (Exception e) {
-					jsonReader.beginObject();
-					while (jsonReader.hasNext()) {
-						String key1 = jsonReader.nextName();
-						Object value1 = jsonReader.nextString();
-						System.out.println(key1 + "," + value1);
-					}
-				}
-			}
-			if (isArray) {
-				jsonReader.endArray();
-			} else {
-				jsonReader.endObject();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (jsonReader != null) {
-				try {
-					jsonReader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if (stringReader != null) {
-				stringReader.close();
-			}
+			jsonElement = jsonParser.parse(sourceJson);
+		} catch (Exception e) {
 		}
+		return jsonElement;
 	}
 
 	public static String formatJson(String sourceJson) {
@@ -92,6 +50,7 @@ public class GsonUtil {
 		if (StringUtils.isEmpty(sourceJson)) {
 			return sb.toString();
 		}
+		sourceJson = sourceJson.replaceAll("[\\n\\t]", "");
 		Pattern pattern = Pattern.compile("\\{|\\[|\\]|\\}");
 		String startPattern = "\\{|\\[";
 		Matcher matcher = pattern.matcher(sourceJson);
@@ -107,6 +66,7 @@ public class GsonUtil {
 			if (before.endsWith(":")) {
 				before += "\n" + tabsByCount;
 			}
+			before = before.replace(":", " : ");
 			if (group.matches(startPattern)) {
 				tabsByCount = getTabsByCount(++tabCount);
 				sb.append(before).append(group).append("\n").append(tabsByCount);
@@ -133,8 +93,16 @@ public class GsonUtil {
 
 	public static void main(String[] args) {
 		String properties = "[{\"age\":28,\"gender\":\"male\"},{\"age\":28,\"gender\":\"male\"}]";
-		String formatJson = formatJson("[{\"name\":\"yanwenge\",\"properties\":" + properties + "},{\"name\":\"yanwenge\",\"properties\":"
-				+ properties + "}]");
-		System.out.println(formatJson);
+		String sourceJson = "[{\"name\":\"yanwenge\",\"properties\":" + properties + "},{\"name\":\"yanwenge\",\"properties\":" + properties + "}]";
+		// String formatJson = formatJson(sourceJson);
+		// System.out.println(formatJson);
+		JsonElement readJson = readJson(sourceJson);
+		System.out.println(readJson);
+		System.out.println(readJson.isJsonArray());
+		System.out.println(readJson.isJsonObject());
+		System.out.println(readJson.isJsonPrimitive());
+		System.out.println(readJson("").isJsonObject());
+		System.out.println(readJson("").isJsonNull());
+		System.out.println(readJson("").isJsonPrimitive());
 	}
 }

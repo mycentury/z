@@ -35,6 +35,14 @@ public class InitServiceTest extends BaseTest {
 		initService.initCommonRegulars();
 	}
 
+	/**
+	 * Test method for {@link xyz.javanew.service.InitService#initEscapeCodes()}.
+	 */
+	@Test
+	public void testInitEscapeCodes() {
+		initService.initEscapeCodes();
+	}
+
 	@Test
 	public void test() {
 		long millis = System.currentTimeMillis();

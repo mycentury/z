@@ -2,40 +2,122 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
 <head>
-	<div th:include="/common/meta :: meta" th:remove="tag"></div>
-	<title th:utext="#{app.name}"></title>
+<div th:include="/common/meta :: meta" th:remove="tag"></div>
+<title th:utext="#{app.name}"></title>
 </head>
-<body th:with="menu='FUNCTION',subMenu='FUNCTION'">
+<body th:with="menu='FUNCTION',subMenu='FUNCTION'" th:inline="text">
 
 	<!-- BEGIN HEADER -->
 	<div th:include="/common/header :: header" th:remove="tag"></div>
 	<!-- END HEADER -->
-	
+
 	<div class="container">
-		<!-- <div class="accordion" id="accordion-108984">
-			<div class="accordion-group">
-				<div class="accordion-heading">
-					<a class="accordion-toggle collapsed" contenteditable="false" data-parent="#accordion-108984" data-toggle="collapse" href="#accordion-element-838053">选项卡 #1 </a>
-				</div>
-				<div class="accordion-body collapse" id="accordion-element-838053" style="height: 0px;">
-					<div class="accordion-inner" contenteditable="true">功能块...</div>
-				</div>
+		<div>
+			<h4>JSON案例</h4>
+			<p id="validate_result"></p>
+			<div class="input-group col-lg-12">
+				<textarea id="source" class="form-control" style="width: 550px;height:650px;" contenteditable="true"></textarea>
+				<span class="input-group-addon" onclick="formatByJs(0);">
+					<i class="glyphicon glyphicon-random"></i>
+				</span>
+				<div id="dest" class="form-control" style="width: 550px;height:650px;"></div>
 			</div>
-			
-			<div class="accordion-group">
-				<div class="accordion-heading">
-					<a class="accordion-toggle collapsed" contenteditable="false" data-parent="#accordion-108984" data-toggle="collapse" href="#accordion-element-296129">选项卡 #2 </a>
-				</div>
-				<div class="accordion-body collapse" id="accordion-element-296129" style="height: 0px;">
-					<div class="accordion-inner" contenteditable="true">功能块...</div>
-				</div>
-			</div>
-		</div> -->
+		</div>
 	</div>
+
+	<!-- <div th:include="/common/slider_window :: slider_window" th:remove="tag"></div> -->
 
 	<!-- BEGIN CSS_JS -->
 	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
 	<!-- END CSS_JS -->
 	<div th:include="/common/footer :: footer" th:remove="tag"></div>
+	<script type="text/javascript" th:inline="javascript">
+	/* <![CDATA[ */
+		function formatByJs(tab){
+			$("#validate_result").html("正在解析。。。");
+			$("#dest").html("");
+			tab = tab=="0"?"<PRE>&#09;</PRE>":multiplyString("&nbsp;", Number(tab));
+			var tabCount = 0;
+			var source = $("#source").val();
+			var isObject=false;
+			if (source == ""){
+				source = "\"\"";
+			}
+			var capital=source.trim().charAt(0);
+			if (capital=="{") {
+				isObject=true;
+			}
+			try {
+				var sourceObj = eval("[" + source + "]");
+				var formatHtml = parseObject(sourceObj,tab,tabCount,isObject,true);
+				$("#validate_result").html("解析成功").css("color","green");;
+				$("#dest").html("<p>"+formatHtml+"</p>");
+			} catch (e) {
+				$("#validate_result").html("json校验失败，请检查格式！").css("color","red");
+			}
+		}
+	
+		function parseObject(obj,tab,tabCount,isObject,highLight) {
+			var formatJson = "";
+			var tabs = multiplyString(tab, tabCount);
+			var type = typeof obj;
+			if (isArray(obj)) {
+				formatJson += tabCount==0 && isObject?"":tabs+"[<br />";
+				for (var i = 0; i < obj.length; i++) {
+					formatJson += parseObject(obj[i],tab,tabCount+1,isObject,highLight);
+				}
+				formatJson += tabCount==0 && isObject?"":tabs+"<br />]";
+			} else if (type == 'object') {
+				if (obj == null) {
+					formatJson += tabs+"null";
+				} else if (obj.constructor == Date.constructor) {
+					formatJson += tabs+obj.toLocaleString();
+				} else if (obj.constructor == RegExp.constructor) {
+					formatJson += tabs+obj;
+				} else {
+					formatJson+=tabs+"{<br />";
+					var array = [];
+					for ( var key in obj){
+						var value = obj[key];
+						key = tabs+tab+"\""+(highLight?"<span style=\"color:red;\">"+key+"</span>":key) +"\"";
+						value = parseObject(value,tab,tabCount+1,isObject,highLight);
+						array.push(key+":"+value);
+					}
+					formatJson+=tabs+array.join(",<br />")+"<br />"+tabs+"}";
+				}
+				//直接类型
+			} else{
+				var value = tabs+highLight?"<span style=\"color:green;\">"+obj+"</span>":obj;
+				if (type == 'number') {
+					formatJson += value;
+				} else if (type == 'boolean') {
+					formatJson += value;
+				} else if (type == 'function') {
+					if (obj.constructor == window.RegExp.constructor) {
+						formatJson += value;
+					} else {
+						formatJson += value;
+					}
+				} else{
+					formatJson +="\""+value+"\"";
+				}
+			}
+			return formatJson;
+		}
+		
+		function isArray(obj) {
+			return obj && typeof obj === 'object' && typeof obj.length === 'number'
+					&& !(obj.propertyIsEnumerable('length'));
+		}
+		
+		function multiplyString(str,count) {
+			var array = [];
+			for (var i = 0; i < count; i++) {
+				array.push(str);
+			}
+			return array.join("");
+		}
+	/* ]]> */
+	</script>
 </body>
 </html>

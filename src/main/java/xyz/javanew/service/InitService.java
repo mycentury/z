@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import xyz.javanew.repository.mongodb.entity.CommonRegularEntity;
+import xyz.javanew.repository.mongodb.entity.EscapeCodeEntity;
 import xyz.javanew.repository.mongodb.entity.MenuEntity;
 
 @Service
@@ -46,6 +47,16 @@ public class InitService {
 		entity.setNameZh("正则表达式");
 		entity.setNameEn("regular expression");
 		entity.setPath("/function/reg");
+		entity.setCreateTime(new Date());
+		entity.setUpdateTime(new Date());
+		subMenus.add(entity);
+
+		entity = new MenuEntity();
+		entity.setId("FUNCTION_FORMATTER");
+		entity.setSeq(2);
+		entity.setNameZh("格式化");
+		entity.setNameEn("formatter");
+		entity.setPath("/function/formatter");
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());
 		subMenus.add(entity);
@@ -106,5 +117,40 @@ public class InitService {
 		//
 		daoService.delete(null, CommonRegularEntity.class);
 		daoService.insert(entities, CommonRegularEntity.class);
+	}
+
+	public void initEscapeCodes() {
+		List<EscapeCodeEntity> entities = new ArrayList<EscapeCodeEntity>();
+		EscapeCodeEntity entity = null;
+
+		entity = new EscapeCodeEntity();
+		entity.setForJava("\"");
+		entity.setForHtml("&quot;");
+		entities.add(entity);
+
+		entity = new EscapeCodeEntity();
+		entity.setForJava("<");
+		entity.setForHtml("&lt;");
+		entities.add(entity);
+
+		entity = new EscapeCodeEntity();
+		entity.setForJava(">");
+		entity.setForHtml("&gt");
+		entities.add(entity);
+
+		entity = new EscapeCodeEntity();
+		entity.setForJava("&");
+		entity.setForHtml("&amp;");
+		entities.add(entity);
+
+		entity = new EscapeCodeEntity();
+		entity.setForJava("'");
+		entity.setForHtml("&apos;");
+		entities.add(entity);
+
+		//
+		daoService.delete(null, EscapeCodeEntity.class);
+		daoService.insert(entities, EscapeCodeEntity.class);
+
 	}
 }

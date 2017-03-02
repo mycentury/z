@@ -13,10 +13,14 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import xyz.javanew.constant.ResultType;
 import xyz.javanew.domain.Result;
 import xyz.javanew.repository.mongodb.entity.CommonRegularEntity;
 import xyz.javanew.service.DaoService;
+import xyz.javanew.service.EscapeService;
 import xyz.javanew.util.GsonUtil;
+
+import com.google.gson.JsonElement;
 
 /**
  * @Desc
@@ -29,6 +33,9 @@ import xyz.javanew.util.GsonUtil;
 public class FunctionController {
 	@Autowired
 	private DaoService daoService;
+
+	@Autowired
+	private EscapeService escapeService;
 
 	@RequestMapping(value = { "" })
 	public String index(HttpServletRequest request, ModelMap map) {
@@ -53,10 +60,19 @@ public class FunctionController {
 	}
 
 	@RequestMapping(value = { "format" })
-	public @ResponseBody Result<String> format(HttpServletRequest request, ModelMap map, String sourceJson) {
+	public @ResponseBody Result<String> format(HttpServletRequest request, ModelMap map, String source) {
 		Result<String> result = new Result<String>();
-		String formatJson = GsonUtil.formatJson(sourceJson);
+		JsonElement readJson = GsonUtil.readJson(source);
+		boolean isJson = readJson != null;
+		result.setStatus(isJson ? ResultType.SUCCESS.getStatus() : ResultType.PARAMETER_ERROR.getStatus());
+		result.setMessage(isJson ? "校验通过：格式正确" : "校验不通过：格式可能错误！");
+		String formatJson = GsonUtil.formatJson(source);
 		result.setData(formatJson);
 		return result;
+	}
+
+	@RequestMapping(value = { "oschina" })
+	public String oschina(HttpServletRequest request, ModelMap map, String source) {
+		return "function/oschina";
 	}
 }
