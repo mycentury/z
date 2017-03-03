@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import xyz.javanew.repository.mongodb.entity.EscapeCodeEntity;
 
@@ -35,9 +36,30 @@ public class EscapeService {
 		}
 		String htmlString = javaString;
 		for (EscapeCodeEntity escape : escapes) {
-			htmlString = htmlString.replace(escape.getForJava(), escape.getForHtml());
+			if (StringUtils.isEmpty(escape.getForJava())
+					|| StringUtils.isEmpty(escape.getForHtml())) {
+				continue;
+			}
+			htmlString = htmlString.replaceAll(escape.getForJava(), escape.getForHtml());
 		}
 		return htmlString;
+	}
+
+	public String convertJavaToJs(String javaString) {
+		if (javaString == null) {
+			return null;
+		}
+		if (CollectionUtils.isEmpty(escapes)) {
+			initEscapeCodes();
+		}
+		String jsString = javaString;
+		for (EscapeCodeEntity escape : escapes) {
+			if (StringUtils.isEmpty(escape.getForJs()) || StringUtils.isEmpty(escape.getForJava())) {
+				continue;
+			}
+			jsString = jsString.replaceAll(escape.getForJava(), escape.getForJs());
+		}
+		return jsString;
 	}
 
 	public String convertHtmlToJava(String htmlString) {
@@ -46,6 +68,10 @@ public class EscapeService {
 		}
 		String javaString = htmlString;
 		for (EscapeCodeEntity escape : escapes) {
+			if (StringUtils.isEmpty(escape.getForHtml())
+					|| StringUtils.isEmpty(escape.getForJava())) {
+				continue;
+			}
 			javaString = javaString.replace(escape.getForHtml(), escape.getForJava());
 		}
 		return javaString;

@@ -35,9 +35,11 @@ function format_json() {
 			if (get_type(result) == "[object String]") {
 				result = json_parse(result);
 			}
-			$("#dest").val(result.data);
+			$("#dest").html(result.data);
+            $("#validate_result").html("Next is the result from the server!").css("color", "red");
 		}, null, null);
 		$("#validate_result").html("json校验失败，正从服务器格式化！").css("color", "red");
+		$("#line-number").html("");
 	}
 }
 

@@ -15,4 +15,5 @@ public class EscapeCodeEntity extends BaseEntity {
 	private String id;
 	private String forJava;
 	private String forHtml;
+	private String forJs;
 }

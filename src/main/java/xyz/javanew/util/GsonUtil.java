@@ -50,7 +50,7 @@ public class GsonUtil {
 		if (StringUtils.isEmpty(sourceJson)) {
 			return sb.toString();
 		}
-		sourceJson = sourceJson.replaceAll("[\\n\\t]", "");
+		sourceJson = sourceJson.replaceAll("[\\n\\t\\s]", "");
 		Pattern pattern = Pattern.compile("\\{|\\[|\\]|\\}");
 		String startPattern = "\\{|\\[";
 		Matcher matcher = pattern.matcher(sourceJson);
@@ -93,7 +93,8 @@ public class GsonUtil {
 
 	public static void main(String[] args) {
 		String properties = "[{\"age\":28,\"gender\":\"male\"},{\"age\":28,\"gender\":\"male\"}]";
-		String sourceJson = "[{\"name\":\"yanwenge\",\"properties\":" + properties + "},{\"name\":\"yanwenge\",\"properties\":" + properties + "}]";
+		String sourceJson = "[{\"name\":\"yanwenge\",\"properties\":" + properties
+				+ "},{\"name\":\"yanwenge\",\"properties\":" + properties + "}]";
 		// String formatJson = formatJson(sourceJson);
 		// System.out.println(formatJson);
 		JsonElement readJson = readJson(sourceJson);

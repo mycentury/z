@@ -124,8 +124,21 @@ public class InitService {
 		EscapeCodeEntity entity = null;
 
 		entity = new EscapeCodeEntity();
-		entity.setForJava("\"");
-		entity.setForHtml("&quot;");
+		entity.setForJava("\\n");
+		entity.setForHtml("<br />");
+		entity.setForJs("<br />");
+		entities.add(entity);
+
+		entity = new EscapeCodeEntity();
+		entity.setForJava("\\t");
+		entity.setForHtml("<PRE>&#09;</PRE>");
+		entity.setForJs("<PRE>&#09;</PRE>");
+		entities.add(entity);
+
+		entity = new EscapeCodeEntity();
+		entity.setForJava("\\s");
+		entity.setForHtml("&nbsp;");
+		entity.setForJs(" ");
 		entities.add(entity);
 
 		entity = new EscapeCodeEntity();

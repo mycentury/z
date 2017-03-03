@@ -60,13 +60,16 @@ public class FunctionController {
 	}
 
 	@RequestMapping(value = { "format" })
-	public @ResponseBody Result<String> format(HttpServletRequest request, ModelMap map, String source) {
+	public @ResponseBody Result<String> format(HttpServletRequest request, ModelMap map,
+			String source) {
 		Result<String> result = new Result<String>();
 		JsonElement readJson = GsonUtil.readJson(source);
 		boolean isJson = readJson != null;
-		result.setStatus(isJson ? ResultType.SUCCESS.getStatus() : ResultType.PARAMETER_ERROR.getStatus());
+		result.setStatus(isJson ? ResultType.SUCCESS.getStatus() : ResultType.PARAMETER_ERROR
+				.getStatus());
 		result.setMessage(isJson ? "校验通过：格式正确" : "校验不通过：格式可能错误！");
 		String formatJson = GsonUtil.formatJson(source);
+		formatJson = escapeService.convertJavaToJs(formatJson);
 		result.setData(formatJson);
 		return result;
 	}
