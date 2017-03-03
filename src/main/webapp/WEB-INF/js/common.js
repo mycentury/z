@@ -71,3 +71,11 @@ Date.prototype.format = function(pattern) {
 	}
 	return pattern;
 }
+
+function sychronize_scroll_x(destId, sourceId) {
+	$("#" + destId).scrollLeft($("#" + sourceId).scrollLeft());
+}
+
+function sychronize_scroll_y(destId, sourceId) {
+	$("#" + destId).scrollTop($("#" + sourceId).scrollTop());
+}

@@ -13,16 +13,63 @@
 
 	<div class="container">
 		<div>
-			<h4>格式化数据格式化<a href="/function/oschina" target="_blank">oschina上提供的格式化</a></h4>
-			<p>提示：目前只支持Json</p>
+			<h4>格式化数据格式化(提示：目前只支持Json)</h4>
 			<p id="validate_result"></p>
-			<div class="input-group col-lg-12">
-				<textarea id="source" class="form-control" rows="30" draggable="false" style="resize :none;" ></textarea>
-				<span class="input-group-addon" onclick="format();">
-					<i class="glyphicon glyphicon-random"></i>
-				</span>
-				<textarea id="dest" readonly="readonly" class="form-control" rows="30" draggable="false" style="cursor: default;resize :none;"></textarea>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 600px;">
+				<textarea id="source" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 fixed-full-scroll" onscroll="sychronize_scroll_y('line-number',this.id);sychronize_scroll_y('dest',this.id);"></textarea>
+				<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" style="height: 100%;padding: 0px;">
+					<p style="margin-top: 80px;">
+						<button class="glyphicon glyphicon-random btn" onclick="format_json();"></button>
+					</p>
+					<p style="margin-top: 80px;">
+						<label for="username">高亮</label>
+						<input id="highLight" type="checkbox" checked="checked" onclick="format_json();" />
+					</p>
+					<p style="margin-top: 80px;">
+						<label for="username">缩进</label>
+						<select id="tab" onpropertychange="format_json();" onchange="format_json();">
+							<option value="0">tab</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+						</select>
+					</p>
+				</div>
+				<div id="line-number" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 fixed-full-scroll" onscroll="sychronize_scroll_y('dest',this.id);sychronize_scroll_y('source',this.id);"></div>
+				<div id="dest" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 fixed-full-scroll" onscroll="sychronize_scroll_y('line-number',this.id);sychronize_scroll_y('source',this.id);"></div>
 			</div>
+			<!-- <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 600px;">
+				<textarea id="source" class="form-control" style="width:45%;height: 100%;padding: 0px;overflow: scroll;resize: none;" onclick="format(0);"></textarea>
+				<div class="form-control" style="width: 3%;height: 100%;padding: 0px;" onclick="format(0);">
+					<input type="checkbox" checked="checked" />
+					<button class="glyphicon glyphicon-random btn"></button>
+				</div>
+				<div id="line-number" class="form-control col-lg-2 col-md-2 col-sm-2 col-xs-2" style="width:7%;height: 100%;overflow: scroll;" onscroll="document.getElementById('dest').scrollTop = this.scrollTop;"></div>
+				<div id="dest" class="form-control" style="width:45%;height: 100%;overflow: scroll;" onscroll="document.getElementById('line-number').scrollTop = this.scrollTop;"></div>
+			</div> -->
+			<!-- <table class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				<tr style="height: 600px;">
+					<td colspan="10" class="fullSize">
+						<textarea id="source" style="overflow: scroll;resize: none;" onclick="format(0);"></textarea>
+					</td>
+					<td colspan="1" class="fullSize" style="vertical-align: middle;">
+						<div onclick="format(0);">
+							<button class="glyphicon glyphicon-random btn" style="width: 100%;"></button>
+						</div>
+					</td>
+					<td colspan="2" class="fullSize">
+						<div id="line-number" style="overflow: scroll;" onscroll="document.getElementById('dest').scrollTop = this.scrollTop;"></div>
+					</td>
+					<td colspan="10" class="fullSize">
+						<div id="dest" style="overflow: scroll;" onscroll="document.getElementById('line-number').scrollTop = this.scrollTop;"></div>
+					</td>
+				</tr>
+			</table> -->
 		</div>
 	</div>
 
@@ -32,131 +79,42 @@
 	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
 	<!-- END CSS_JS -->
 	<div th:include="/common/footer :: footer" th:remove="tag"></div>
-	<script type="text/javascript" th:inline="javascript">
-		function format() {
-			var source = $("#source").val();
-			general_ajax("/function/format", "POST", {source : source}, null, function(result){
-				if (get_type(result) == "[object String]") {
-					result = json_parse(result);
-				}
-				$("#dest").val(result.data);
-				$("#validate_result").html(result.message);
-				$("#validate_result").css("color",result.status==200?"green":"red");
-			}, null, null);
-			$("#validate_result").html("正在解析。。。");
-			$("#dest").val("");
+	<script type="text/javascript" src="/js/json_format.js"></script>
+	<style type="text/css">
+		pre {
+			display: inline;
+			background-color: #ffffff;
+			border: none;
+			padding: 0px;
+			margin: 0;
+			font-size: 14px;
+			line-height: 1.4;
+			color: #333;
+			border-radius: 0px;
 		}
-		
-		function formatByJs(tab, tabCount,isKey,addQuote,highLight){
-			var source = $("#source").val();
-			if (source == ""){
-				source = "\"\"";
-			}
-			var sourceObj = eval("[" + source + "]");
-			return parseObject(obj, tab,tabCount, false, false, isKey, addQuote,highLight);
+		table{
+			width: 100%;
+			table-layout: fixed;
 		}
-		
-		function parseObject(obj, tab, tabCount,addComma, isArray, isKey,addQuote,highLight) {
-			var comma = addComma ? "," : "";
-			var quote = addQuote ? "\"" : "";
-			var formatJson = "";
-			var type = typeof obj;
-			if (isArray(obj)) {
-				if (obj.length == 0) {
-					formatJson += "[]";
-				} else {
-					formatJson += "[";
-					for (var i = 0; i < obj.length; i++) {
-						html += ProcessObject(obj[i],tab,  tabCount + 1, i < (obj.length - 1),
-								true, false, addQuote);
-					}
-					clpsHtml = window.IsCollapsible ? "</span>" : "";
-					html += GetRow(indent, clpsHtml
-							+ "<span class='ArrayBrace'>]</span>" + comma);
-				}
-			} else if (type == 'object') {
-				if (obj == null) {
-					html += FormatLiteral("null", "", comma, indent, isArray, "Null");
-				} else if (obj.constructor == window._dateObj.constructor) {
-					html += FormatLiteral("new Date(" + obj.getTime() + ") /*"
-							+ obj.toLocaleString() + "*/", "", comma, indent, isArray,
-							"Date");
-				} else if (obj.constructor == window._regexpObj.constructor) {
-					html += FormatLiteral("new RegExp(" + obj + ")", "", comma, indent,
-							isArray, "RegExp");
-				} else {
-					var numProps = 0;
-					for ( var prop in obj)
-						numProps++;
-					if (numProps == 0) {
-						html += GetRow(indent, "<span class='ObjectBrace'>{ }</span>"
-								+ comma, isPropertyContent);
-					} else {
-						clpsHtml = window.IsCollapsible ? "<span><img src=\""
-								+ window.expandedImg
-								+ "\" onClick=\"ExpImgClicked(this)\" /></span><span class='collapsible'>"
-								: "";
-						html += GetRow(indent, "<span class='ObjectBrace'>{</span>"
-								+ clpsHtml, isPropertyContent);
-
-						var j = 0;
-
-						for ( var prop in obj) {
-							html += GetRow(indent + 1, "<span class='PropertyName'>"
-									+ quote
-									+ prop
-									+ quote
-									+ "</span>: "
-									+ ProcessObject(obj[prop], indent + 1,
-											++j < numProps, false, true));
-						}
-
-						clpsHtml = window.IsCollapsible ? "</span>" : "";
-
-						html += GetRow(indent, clpsHtml
-								+ "<span class='ObjectBrace'>}</span>" + comma);
-
-					}
-				}
-			} else if (type == 'number') {
-				html += FormatLiteral(obj, "", comma, indent, isArray, "Number");
-			} else if (type == 'boolean') {
-				html += FormatLiteral(obj, "", comma, indent, isArray, "Boolean");
-			} else if (type == 'function') {
-				if (obj.constructor == window._regexpObj.constructor) {
-					html += FormatLiteral("new RegExp(" + obj + ")", "", comma, indent,
-							isArray, "RegExp");
-				} else {
-					obj = FormatFunction(indent, obj);
-					html += FormatLiteral(obj, "", comma, indent, isArray, "Function");
-				}
-			} else if (type == 'undefined') {
-				html += FormatLiteral("undefined", "", comma, indent, isArray, "Null");
-			} else {
-				html += FormatLiteral(obj.toString().split("\\").join("\\\\")
-						.split('"').join('\\"'), "\"", comma, indent, isArray, "String");
-			}
-			return html;
+		td.fullSize div,td.fullSize textarea{
+			width: 100%;
+			height: 100%;
+			padding: 0px;
+			border: solid 1px #ccc;
+			margin: 0px;
 		}
-		
-		function multiplyString(num, str) {
-			var array = [];
-			for (var i = 0; i < num; i++) {
-				array.push(str);
-			}
-			return array.join("");
+		td.fullSize{
+			height: inherit;
+			padding: 0px;
+			margin: 0px;
 		}
-		
-		function isArray(obj) {
-			return obj && typeof obj === 'object' && typeof obj.length === 'number'
-					&& !(obj.propertyIsEnumerable('length'));
+		.fixed-full-scroll{
+			height: 100%;
+			overflow: scroll;
+			padding: 0px;
+			resize: none;
+			border: solid 1px #ccc;
 		}
-
-		function getRow(tabs,data) {
-			if (data != null && data.length > 0 && data.charAt(data.length - 1) != "\n")
-				data = data + "\n";
-			return tabs + data;
-		}
-	</script>
+	</style>
 </body>
 </html>

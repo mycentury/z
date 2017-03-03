@@ -26,9 +26,9 @@
 						</span>
 					</div>
 				</form>
-				<select onchange="changeLanguage(this.value);">
-					<option value="en">[[#{language.english}]]</option>
-					<option value="zh">[[#{language.chinese}]]</option>
+				<select class="form-control" style="height: 34px;width: 80px;margin-top: 8px;" onchange="changeLanguage(this.value);" onpropertychange="changeLanguage(this.value);">
+					<option value="zh" th:selected="${'zh' eq language ? 'true' : 'false'}" selected="false">[[#{language.chinese}]]</option>
+					<option value="en" th:selected="${'en' eq language ? 'true' : 'false'}" selected="false">[[#{language.english}]]</option>
 				</select>
 			</div>
 			<a href=""></a>

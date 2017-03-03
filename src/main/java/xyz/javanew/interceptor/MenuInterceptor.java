@@ -5,12 +5,15 @@ package xyz.javanew.interceptor;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -35,6 +38,8 @@ public class MenuInterceptor implements HandlerInterceptor {
 
 	@Autowired
 	private DaoService daoService;
+
+	private List<MenuEntity> menuList;
 
 	/**
 	 * preHandle方法是进行处理器拦截用的，顾名思义，该方法将在Controller处理之前进行调用， SpringMVC中的Interceptor拦截器是链式的，可以同时存在
@@ -69,12 +74,17 @@ public class MenuInterceptor implements HandlerInterceptor {
 	 */
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-		List<MenuEntity> menuList = daoService.query(null, MenuEntity.class);
 		if (handler instanceof HandlerMethod) {
 			if (modelAndView == null) {
 				modelAndView = new ModelAndView();
 			}
+			if (CollectionUtils.isEmpty(menuList)) {
+				menuList = daoService.query(null, MenuEntity.class);
+			}
 			modelAndView.addObject("menuList", menuList);
+			String language = Locale.US.equals(LocaleContextHolder.getLocale()) ? "en" : "zh";
+			System.out.println(language);
+			modelAndView.addObject("language", language);
 		}
 	}
 
