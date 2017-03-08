@@ -13,21 +13,21 @@
 
 	<div class="container">
 		<div>
-			<h4>格式化数据格式化(提示：目前只支持Json)</h4>
-			<p id="validate_result"></p>
+			<h4 style="text-align: center;">格式化数据格式化(提示：目前只支持Json)</h4>
+			<p style="text-align: center;" id="validate_result"></p>
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 600px;">
-				<textarea id="source" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 fixed-full-scroll" onscroll="sychronize_scroll_y('line-number',this.id);sychronize_scroll_y('dest',this.id);"></textarea>
+				<textarea id="source" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 fixed-full-scroll"></textarea>
 				<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" style="height: 100%;padding: 0px;">
-					<p style="margin-top: 80px;">
+					<p style="margin-top: 60px;">
 						<button class="glyphicon glyphicon-random btn" onclick="format_json();"></button>
 					</p>
-					<p style="margin-top: 80px;">
-						<label for="username">高亮</label>
+					<p style="margin-top: 60px;">
+						<label for="highLight">高亮</label>
 						<input id="highLight" type="checkbox" checked="checked" onclick="format_json();" />
 					</p>
-					<p style="margin-top: 80px;">
-						<label for="username">缩进</label>
-						<select id="tab" onpropertychange="format_json();" onchange="format_json();">
+					<p style="margin-top: 60px;">
+						<label for="tab">缩进量</label>
+						<select id="tab" class="form-control" onpropertychange="format_json();" onchange="format_json();">
 							<option value="0">tab</option>
 							<option value="1">1</option>
 							<option value="2">2</option>
@@ -39,37 +39,16 @@
 							<option value="8">8</option>
 						</select>
 					</p>
+					<p style="margin-top: 60px;">
+						<label for="level">级别</label>
+					 	<select id="level" class="form-control"></select><br />
+						<button type="button" class="btn" onclick="collapse_by_action('collapse');">折叠</button>
+						<button type="button" class="btn" style="margin-top: 5px;" onclick="collapse_by_action('expend');">展开</button>
+					</p>
 				</div>
-				<div id="line-number" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 fixed-full-scroll" onscroll="sychronize_scroll_y('dest',this.id);sychronize_scroll_y('source',this.id);"></div>
-				<div id="dest" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 fixed-full-scroll" onscroll="sychronize_scroll_y('line-number',this.id);sychronize_scroll_y('source',this.id);"></div>
+				<div id="line-number" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 fixed-full-scroll" onscroll="sychronize_scroll_y('dest',this.id);"></div>
+				<div id="dest" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 fixed-full-scroll" onscroll="sychronize_scroll_y('line-number',this.id);"></div>
 			</div>
-			<!-- <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 600px;">
-				<textarea id="source" class="form-control" style="width:45%;height: 100%;padding: 0px;overflow: scroll;resize: none;" onclick="format(0);"></textarea>
-				<div class="form-control" style="width: 3%;height: 100%;padding: 0px;" onclick="format(0);">
-					<input type="checkbox" checked="checked" />
-					<button class="glyphicon glyphicon-random btn"></button>
-				</div>
-				<div id="line-number" class="form-control col-lg-2 col-md-2 col-sm-2 col-xs-2" style="width:7%;height: 100%;overflow: scroll;" onscroll="document.getElementById('dest').scrollTop = this.scrollTop;"></div>
-				<div id="dest" class="form-control" style="width:45%;height: 100%;overflow: scroll;" onscroll="document.getElementById('line-number').scrollTop = this.scrollTop;"></div>
-			</div> -->
-			<!-- <table class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-				<tr style="height: 600px;">
-					<td colspan="10" class="fullSize">
-						<textarea id="source" style="overflow: scroll;resize: none;" onclick="format(0);"></textarea>
-					</td>
-					<td colspan="1" class="fullSize" style="vertical-align: middle;">
-						<div onclick="format(0);">
-							<button class="glyphicon glyphicon-random btn" style="width: 100%;"></button>
-						</div>
-					</td>
-					<td colspan="2" class="fullSize">
-						<div id="line-number" style="overflow: scroll;" onscroll="document.getElementById('dest').scrollTop = this.scrollTop;"></div>
-					</td>
-					<td colspan="10" class="fullSize">
-						<div id="dest" style="overflow: scroll;" onscroll="document.getElementById('line-number').scrollTop = this.scrollTop;"></div>
-					</td>
-				</tr>
-			</table> -->
 		</div>
 	</div>
 
@@ -79,7 +58,7 @@
 	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
 	<!-- END CSS_JS -->
 	<div th:include="/common/footer :: footer" th:remove="tag"></div>
-	<script type="text/javascript" src="/js/json_format.js"></script>
+	<script type="text/javascript" src="/js/formatter.js"></script>
 	<style type="text/css">
 		pre {
 			display: inline;

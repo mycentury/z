@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import xyz.javanew.interceptor.MenuInterceptor;
 import xyz.javanew.repository.mongodb.entity.CommonRegularEntity;
 import xyz.javanew.repository.mongodb.entity.EscapeCodeEntity;
 import xyz.javanew.repository.mongodb.entity.MenuEntity;
@@ -17,6 +18,8 @@ public class InitService {
 	private static final Logger logger = Logger.getLogger(InitService.class);
 	@Autowired
 	private DaoService daoService;
+	@Autowired
+	private MenuInterceptor menuInterceptor;
 
 	public void initMenus() {
 		List<MenuEntity> menuEntities = new ArrayList<MenuEntity>();
@@ -62,6 +65,16 @@ public class InitService {
 		subMenus.add(entity);
 
 		entity = new MenuEntity();
+		entity.setId("FUNCTION_COLOR");
+		entity.setSeq(3);
+		entity.setNameZh("颜色选择");
+		entity.setNameEn("color");
+		entity.setPath("/function/color");
+		entity.setCreateTime(new Date());
+		entity.setUpdateTime(new Date());
+		subMenus.add(entity);
+
+		entity = new MenuEntity();
 		entity.setId("FUNCTION");
 		entity.setSeq(1);
 		entity.setNameZh("功能区");
@@ -74,6 +87,7 @@ public class InitService {
 
 		daoService.delete(null, MenuEntity.class);
 		daoService.insert(menuEntities, MenuEntity.class);
+		menuInterceptor.initMenuList();
 	}
 
 	public void initCommonRegulars() {
