@@ -2,8 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
 <head>
-<div th:include="/common/meta :: meta" th:remove="tag"></div>
-<title th:utext="#{app.name}"></title>
+	<meta http-equiv="keywords" content="java,util,工具,在线" />
+	<div th:include="/common/meta :: meta" th:remove="tag"></div>
+	<title th:utext="#{app.name}"></title>
 </head>
 <body th:with="menu='FUNCTION',subMenu='FUNCTION'" th:inline="text">
 
@@ -12,8 +13,6 @@
 	<!-- END HEADER -->
 
 	<div class="container">
-		<div>
-		</div>
 	</div>
 
 	<!-- <div th:include="/common/slider_window :: slider_window" th:remove="tag"></div> -->

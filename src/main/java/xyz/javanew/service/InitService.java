@@ -67,7 +67,7 @@ public class InitService {
 		entity = new MenuEntity();
 		entity.setId("FUNCTION_COLOR");
 		entity.setSeq(3);
-		entity.setNameZh("颜色选择");
+		entity.setNameZh("调色板");
 		entity.setNameEn("color");
 		entity.setPath("/function/color");
 		entity.setCreateTime(new Date());
@@ -76,6 +76,7 @@ public class InitService {
 
 		entity = new MenuEntity();
 		entity.setId("FUNCTION");
+		entity.setHasContent(false);
 		entity.setSeq(1);
 		entity.setNameZh("功能区");
 		entity.setNameEn("function");

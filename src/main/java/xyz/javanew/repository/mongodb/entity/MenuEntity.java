@@ -29,7 +29,7 @@ public class MenuEntity extends BaseEntity {
 	/**
 	 * 顺序
 	 */
-	private int seq;
+	private Integer seq;
 	/**
 	 * 中文名称
 	 */
@@ -45,7 +45,11 @@ public class MenuEntity extends BaseEntity {
 	/**
 	 * 启用状态：1-启用，0-禁用
 	 */
-	private int status = 1;
+	private Boolean hasContent = true;
+	/**
+	 * 启用状态：1-启用，0-禁用
+	 */
+	private Integer status = 1;
 	/**
 	 * 子菜单列表（封装用）
 	 */
