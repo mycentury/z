@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import xyz.javanew.interceptor.MenuInterceptor;
 import xyz.javanew.repository.mongodb.entity.CommonRegularEntity;
 import xyz.javanew.repository.mongodb.entity.EscapeCodeEntity;
 import xyz.javanew.repository.mongodb.entity.MenuEntity;
@@ -18,8 +17,6 @@ public class InitService {
 	private static final Logger logger = Logger.getLogger(InitService.class);
 	@Autowired
 	private DaoService daoService;
-	@Autowired
-	private MenuInterceptor menuInterceptor;
 
 	public void initMenus() {
 		List<MenuEntity> menuEntities = new ArrayList<MenuEntity>();
@@ -88,7 +85,6 @@ public class InitService {
 
 		daoService.delete(null, MenuEntity.class);
 		daoService.insert(menuEntities, MenuEntity.class);
-		menuInterceptor.initMenuList();
 	}
 
 	public void initCommonRegulars() {

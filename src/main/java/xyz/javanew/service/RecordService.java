@@ -17,6 +17,8 @@ import xyz.javanew.util.AddressUtil;
 public class RecordService {
 	@Autowired
 	private DaoService daoService;
+	@Autowired
+	private CacheService cacheService;
 
 	@Value("${log.record.open}")
 	private boolean openRecord;
@@ -48,13 +50,17 @@ public class RecordService {
 			record.setUsertype(String.valueOf(request.getAttribute("usertype")));
 		}
 
-		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/" + request.getContextPath();
+		String baseUrl = cacheService.getBaseUrl(request);
 		String before = request.getHeader("Referer");
+		String after = request.getRequestURL().toString();
 		if (!StringUtils.isEmpty(before)) {
-			before = before.replace(basePath, "/");
+			before = before.replace(baseUrl, "");
+		}
+		if (!StringUtils.isEmpty(after)) {
+			after = after.replace(baseUrl, "");
 		}
 		record.setBefore(before);
-		record.setAfter(request.getRequestURL().toString());
+		record.setAfter(after);
 		record.setIp(AddressUtil.getIpAddress(request));
 		return record;
 	}

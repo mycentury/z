@@ -14,8 +14,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -23,7 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import xyz.javanew.repository.mongodb.entity.MenuEntity;
 import xyz.javanew.repository.mongodb.entity.RecordEntity;
-import xyz.javanew.service.DaoService;
+import xyz.javanew.service.CacheService;
 import xyz.javanew.service.RecordService;
 
 /**
@@ -38,11 +36,8 @@ public class MenuInterceptor implements HandlerInterceptor {
 
 	@Autowired
 	private RecordService recordService;
-
 	@Autowired
-	private DaoService daoService;
-
-	private List<MenuEntity> menuList;
+	private CacheService cacheService;
 
 	/**
 	 * preHandle方法是进行处理器拦截用的，顾名思义，该方法将在Controller处理之前进行调用， SpringMVC中的Interceptor拦截器是链式的，可以同时存在
@@ -59,13 +54,9 @@ public class MenuInterceptor implements HandlerInterceptor {
 					if (annotation instanceof RequestMapping) {
 						RecordEntity record = recordService.assembleRocordEntity(request);
 						recordService.insert(record);
-						String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/"
-								+ request.getContextPath();
-						String before = request.getHeader("Referer");
-						if (!StringUtils.isEmpty(before)) {
-							before = before.replace(basePath, "/");
+						if (!"/file/progress".equals(record.getAfter())) {
+							logger.info("拦截到来自" + record.getBefore() + "的请求：" + record.getAfter());
 						}
-						logger.info("拦截到来自" + before + "的请求：" + request.getRequestURI());
 						return true;
 					}
 				}
@@ -87,20 +78,11 @@ public class MenuInterceptor implements HandlerInterceptor {
 			if (modelAndView == null) {
 				modelAndView = new ModelAndView();
 			}
-			if (CollectionUtils.isEmpty(menuList)) {
-				initMenuList();
-			}
+			List<MenuEntity> menuList = cacheService.getMenuList();
 			modelAndView.addObject("menuList", menuList);
 			String language = Locale.US.equals(LocaleContextHolder.getLocale()) ? "en" : "zh";
 			modelAndView.addObject("language", language);
 		}
-	}
-
-	/**
-	 * 
-	 */
-	public void initMenuList() {
-		menuList = daoService.query(null, MenuEntity.class);
 	}
 
 	/**

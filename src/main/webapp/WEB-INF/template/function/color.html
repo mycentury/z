@@ -5,6 +5,9 @@
 	<meta http-equiv="keywords" content="颜色,拾色器,选择" />
 	<div th:include="/common/meta :: meta" th:remove="tag"></div>
 	<title th:utext="#{app.name}"></title>
+	<!-- BEGIN CSS_JS -->
+	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
+	<!-- END CSS_JS -->
 	<link rel="stylesheet" href="/jquery/colorpicker/css/colorpicker.css"></link>
     <link rel="stylesheet" href="/jquery/colorpicker/css/layout.css"></link>
 </head>
@@ -52,9 +55,6 @@
 
 	<!-- <div th:include="/common/slider_window :: slider_window" th:remove="tag"></div> -->
 
-	<!-- BEGIN CSS_JS -->
-	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
-	<!-- END CSS_JS -->
 	<div th:include="/common/footer :: footer" th:remove="tag"></div>
 	<script type="text/javascript" src="/jquery/colorpicker/js/jquery.js"></script>
 	<script type="text/javascript" src="/jquery/colorpicker/js/colorpicker.js"></script>
