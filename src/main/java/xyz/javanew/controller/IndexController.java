@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import xyz.javanew.constant.ResultType;
+import xyz.javanew.constant.SysConfig;
 import xyz.javanew.domain.Result;
 import xyz.javanew.service.CacheService;
 import xyz.javanew.util.QrcodeUtil;
@@ -48,7 +49,7 @@ public class IndexController {
 		try {
 			String uploadAbsolutePath = cacheService.getUploadAbsolutePath();
 			qrcodeInfo.setQrcodePath(uploadAbsolutePath);
-			String baseUrl = cacheService.getBaseUrl(request);
+			String baseUrl = cacheService.getBaseUrl(SysConfig.BASE_URL);
 			String logoPath = qrcodeInfo.getLogoPath();
 			if (StringUtils.hasText(logoPath)) {
 				logoPath = qrcodeInfo.getLogoPath().replace(baseUrl + "/" + cacheService.getUploadFolder(), uploadAbsolutePath);
@@ -59,6 +60,24 @@ public class IndexController {
 			qrcodeInfo.setForeground(qrcodeInfo.getForeground().replace("#", ""));
 			String generateQrcode = QrcodeUtil.generateQrcode(qrcodeInfo);
 			result.setData(generateQrcode.replace(uploadAbsolutePath, baseUrl + "/" + cacheService.getUploadFolder()));
+			result.setResultStatusAndMsg(ResultType.SUCCESS, null);
+		} catch (Exception e) {
+			result.setResultStatusAndMsg(ResultType.SERVICE_ERROR, null);
+		}
+		return result;
+	}
+
+	@RequestMapping(value = { "/qrcode/parse" })
+	public @ResponseBody Result<String> parseQrcode(HttpServletRequest request, ModelMap map, String qrcodeImage) {
+		Result<String> result = new Result<String>();
+		try {
+			String uploadAbsolutePath = cacheService.getUploadAbsolutePath();
+			String baseUrl = cacheService.getBaseUrl(SysConfig.BASE_URL);
+			if (StringUtils.hasText(qrcodeImage)) {
+				qrcodeImage = qrcodeImage.replace(baseUrl + "/" + cacheService.getUploadFolder(), uploadAbsolutePath);
+			}
+			String qrcodeText = QrcodeUtil.parseQrcode(qrcodeImage);
+			result.setData(qrcodeText);
 			result.setResultStatusAndMsg(ResultType.SUCCESS, null);
 		} catch (Exception e) {
 			result.setResultStatusAndMsg(ResultType.SERVICE_ERROR, null);

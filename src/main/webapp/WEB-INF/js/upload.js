@@ -11,7 +11,7 @@ function list_files(progress_id, files_id, submit_id) {
 	for (var i = 0; i < files.length; i++) {
 		size += files[i].size;
 	}
-	var max_size = 1000 * 1024 * 1024;
+	var max_size = 10 * 1024 * 1024;
 	if (size > max_size) {
 		file_input.outerHTML = file_input.outerHTML;
 		file_input.value = "";
@@ -46,7 +46,9 @@ function start_upload(form_id, files_id, submit_id, show_img_id) {
 			$(submit).attr("disabled", false);
 			clearInterval(timer);
 		} else {
-			$("#" + show_img_id).attr("src", msg.targetNames);
+			if (show_img_id != undefined) {
+				$("#" + show_img_id).attr("src", msg.targetNames);
+			}
 		}
 		// 上传结束，不一定成功，success是针对ajax请求，不是业务
 		$(submit).attr("disabled", false);

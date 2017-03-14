@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import xyz.javanew.constant.OperType;
+import xyz.javanew.constant.SysConfig;
 import xyz.javanew.repository.mongodb.entity.RecordEntity;
 import xyz.javanew.util.AddressUtil;
 
@@ -50,7 +51,7 @@ public class RecordService {
 			record.setUsertype(String.valueOf(request.getAttribute("usertype")));
 		}
 
-		String baseUrl = cacheService.getBaseUrl(request);
+		String baseUrl = cacheService.getBaseUrl(SysConfig.BASE_URL);
 		String before = request.getHeader("Referer");
 		String after = request.getRequestURL().toString();
 		if (!StringUtils.isEmpty(before)) {

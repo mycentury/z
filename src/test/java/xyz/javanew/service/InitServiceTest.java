@@ -43,6 +43,14 @@ public class InitServiceTest extends BaseTest {
 		initService.initEscapeCodes();
 	}
 
+	/**
+	 * Test method for {@link xyz.javanew.service.InitService#initSysConfigs()}.
+	 */
+	@Test
+	public void testInitSysConfigs() {
+		initService.initSysConfigs();
+	}
+
 	@Test
 	public void test() {
 		long millis = System.currentTimeMillis();

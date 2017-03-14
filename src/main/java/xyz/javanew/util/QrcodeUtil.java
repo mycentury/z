@@ -226,12 +226,18 @@ public class QrcodeUtil {
 		qrcodeInfo.setLogoHeight(32);
 		qrcodeInfo.setMarginLeft(128);
 		qrcodeInfo.setMarginTop(128);
-		String generateQrcode = generateQrcode(qrcodeInfo);
-		System.out.println(generateQrcode);
-		System.out.println(parseQrcode(new File(generateQrcode)));
+		qrcodeInfo.setBackground("FFFFFF");
+		qrcodeInfo.setForeground("FF00FF");
+		// String generateQrcode = generateQrcode(qrcodeInfo);
+		// System.out.println(generateQrcode);
+		// System.out.println(parseQrcode(new File(generateQrcode)));
 		// String parsePath = "D:\\项目读写文件\\Qrcode\\微信.jpg";
 		// File file = new File(parsePath);
 		// String parseQrcode = parseQrcode(file);
 		// System.out.println(parseQrcode);
+		String parsePath = "D:\\项目读写文件\\Qrcode\\weixin.png";
+		File file = new File(parsePath);
+		String parseQrcode = parseQrcode(file);
+		System.out.println(parseQrcode);
 	}
 }

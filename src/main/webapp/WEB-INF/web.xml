@@ -20,6 +20,11 @@
 				org.springframework.web.context.ContextLoaderListener
 			</listener-class>
 		</listener>
+		<listener>
+			<listener-class>
+				xyz.javanew.listener.SessionListener
+			</listener-class>
+		</listener>
 
 		<!-- springmvc -->
 		<servlet>
@@ -39,6 +44,6 @@
 		</servlet-mapping>
 
 		<session-config>
-			<session-timeout>60</session-timeout>
+			<session-timeout>30</session-timeout>
 		</session-config>
 	</web-app>

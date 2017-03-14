@@ -1,0 +1,32 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta name="description" content="description" />
+	<meta http-equiv="keywords" content="description" />
+	<div th:include="/common/meta :: meta" th:remove="tag"></div>
+	<title th:utext="#{app.name}"></title>
+</head>
+<body th:with="menu='DESCRIPTION'" th:inline="text">
+
+	<!-- BEGIN HEADER -->
+	<div th:include="/common/header :: header" th:remove="tag"></div>
+	<!-- END HEADER -->
+	
+	<div class="container">
+		<div>
+			<h3>本站说明</h3>
+			<p>本站为个人网站，用于提供java开发常用的在线工具，供学习交流。有些工具借用其他工具，将会注明出处，如拾色器取自JQuery。</p>
+			<p>一些开放类或者未声明的地方，如果有影响您到版权的地方，请指出，本站本人尊重版权。</p>
+			<p>本站使用技术或者插件如下：</p>
+			<p>前端：bootstrap，chart，Jquery(包括Jquery-qrcode和Color-Picker)，zeroclipboard等</p>
+			<p>后端：SSM+thymeleaf等</p>
+		</div>
+	</div>
+
+	<!-- BEGIN CSS_JS -->
+	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
+	<!-- END CSS_JS -->
+	<div th:include="/common/footer :: footer" th:remove="tag"></div>
+</body>
+</html>

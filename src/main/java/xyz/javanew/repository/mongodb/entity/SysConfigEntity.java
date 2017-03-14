@@ -20,44 +20,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @EqualsAndHashCode(callSuper = false)
 public class SysConfigEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
-	/**
-	 * sp-00-01
-	 */
 	@Id
 	private String id;
-	/**
-	 * sp-系统参数
-	 */
-	private String type;
-	/**
-	 * 父编号
-	 */
-	private String parentNo;
-	/**
-	 * 子编号
-	 */
-	private String subNo;
-	/**
-	 * 参数名称
-	 */
-	private String name;
-	/**
-	 * 参数key
-	 */
-	private String key;
 	/**
 	 * 参数value
 	 */
 	private String value;
+	private String desc;
 	/**
 	 * 启用状态：1-启用，0-禁用
 	 */
-	private int status;
-
-	public void setPrimaryKey(String type, String parentNo, String subNo) {
-		this.type = type;
-		this.parentNo = parentNo;
-		this.subNo = subNo;
-		this.id = type + "-" + parentNo + "-" + subNo;
-	}
+	private int status = 1;
 }

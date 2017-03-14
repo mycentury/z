@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -30,7 +30,7 @@ import xyz.javanew.service.RecordService;
  * @Date 2016年12月8日
  * @ClassName MenuInterceptor
  */
-@Controller
+@Component
 public class MenuInterceptor implements HandlerInterceptor {
 	private final static Logger logger = Logger.getLogger(MenuInterceptor.class);
 
@@ -54,6 +54,7 @@ public class MenuInterceptor implements HandlerInterceptor {
 					if (annotation instanceof RequestMapping) {
 						RecordEntity record = recordService.assembleRocordEntity(request);
 						recordService.insert(record);
+						cacheService.updateAccessFrequencyMap(record);
 						if (!"/file/progress".equals(record.getAfter())) {
 							logger.info("拦截到来自" + record.getBefore() + "的请求：" + record.getAfter());
 						}
@@ -82,6 +83,8 @@ public class MenuInterceptor implements HandlerInterceptor {
 			modelAndView.addObject("menuList", menuList);
 			String language = Locale.US.equals(LocaleContextHolder.getLocale()) ? "en" : "zh";
 			modelAndView.addObject("language", language);
+			Object onlines = request.getSession().getServletContext().getAttribute("onlines");
+			modelAndView.addObject("onlines", onlines);
 		}
 	}
 

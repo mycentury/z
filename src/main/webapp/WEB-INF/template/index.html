@@ -15,12 +15,7 @@
 	
 	<div class="container">
 		<div>
-			<h3>本站说明</h3>
-			<p>本站为个人网站，用于提供java开发常用的在线工具，供学习交流。有些工具借用其他工具，将会注明出处，如拾色器取自JQuery。</p>
-			<p>一些开放类或者未声明的地方，如果有影响您到版权的地方，请指出，本站本人尊重版权。</p>
-		</div>
-		<div style="margin-top: 50px;">
-			<h2>二维码生成解析在线工具</h2>
+			<h3 style="text-align: center;">二维码生成</h3>
 			<div class="col-lg-4 col-xs-4 col-sm-4 col-md-4">
 				<table>
 					<tr>
@@ -191,6 +186,18 @@
 			该工具出自：<a target="_blank" href="https://github.com/jeromeetienne/jquery-qrcode">https://github.com/jeromeetienne/jquery-qrcode（Jquery不支持图片，这里用样式控制覆盖在上面，如果图片太大，会扫不出来）</a>
 			</div>
 		</div>
+		<div class="col-lg-12 col-xs-12 col-sm-12 col-md-12">
+			<h3 style="text-align: center;">二维码解析</h3>
+	   		<form id="form_two" method="post" enctype="multipart/form-data">
+				<input id="qrcode-img" name="files" type="file" multiple="multiple" value="logo" accept="jpg/png" onchange="list_files('progress_bar2',this.id,'submit2')" />
+	            <button id="submit2" class="btn" type="button" disabled="true" onclick="start_upload('form_two','qrcode-img',this.id,'display-back');">上传</button>
+	   		</form>
+	   		<div id="progress_bar2">
+	   		</div>
+	   		<p><img id="display-back" alt="" src="" /></p>
+	   		<button class="btn" type="button" onclick="parseQrcodeBackground();">后台解析</button>
+	   		<p>解析结果：<span id="parse-text"></span></p>
+		</div>
 	</div>
 
 	<!-- BEGIN CSS_JS -->
@@ -207,12 +214,12 @@
 			var height = $("#height").val();
 			var hasLogo = $("#insert_logo").prop("checked");
 			if (hasLogo) {
-				var logoWidth = Math.floor(Number(width)/3/16)*16;
-				var logoHeight = Math.floor(Number(height)/3/16)*16;
+				var logoWidth = Math.floor(Number(width)/3);
+				var logoHeight = Math.floor(Number(height)/3);
 				$("#logo_width").val(logoWidth);
 				$("#logo_height").val(logoHeight);
-				$("#margin_left").val((Number(width)-logoWidth)/2);
-				$("#margin_top").val((Number(height)-logoHeight)/2);
+				$("#margin_left").val(Math.floor((Number(width)-logoWidth)/2));
+				$("#margin_top").val(Math.floor((Number(height)-logoHeight)/2));
 			}
 		}
 		             
@@ -302,11 +309,27 @@
 				if (get_type(result) == "[object String]") {
 					result = json_parse(result);
 				}
-				$("#qrcode").html("<image id=\"logo\" src=\""+result.data+"\" />");
+				$("#qrcode").html("<image id=\"logo\" src=\""+result.data+"?"+new Date().getTime()+"\" />");
 				$("#logo").css("position","absolute");
 				$("#logo").css("width", qrcodeWidth+"px");
 				$("#logo").css("height", qrcodeHeight+"px");
 				alert(result.status == 200?"生成成功":"生成失败");
+			}, null, null);
+		}
+		
+		function parseQrcodeBackground(){
+			var qrcodeImage = $("#display-back").attr("src");
+			if (qrcodeImage==undefined||qrcodeImage=="") {
+				alert("请先检查文件是否上传！");
+				return false;
+			}
+			var data = { qrcodeImage : qrcodeImage };
+			general_ajax("/qrcode/parse", "POST", data, null, function(result) {
+				if (get_type(result) == "[object String]") {
+					result = json_parse(result);
+				}
+				$("#parse-text").html(result.data);
+				alert(result.status == 200?"解析成功":"解析失败");
 			}, null, null);
 		}
 		/* ]]> */

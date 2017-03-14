@@ -10,21 +10,20 @@ package xyz.javanew.constant;
  * @ClassName SysConfig
  */
 public enum SysConfig {
-	/**
-	 * 双色球下期信息
-	 */
-	SSQ_NEXT_TERM("SP-00-00"),
-	/**
-	 * 双色球当前期信息
-	 */
-	SSQ_CURRENT_TERM("SP-00-01");
+	BASE_URL("JN-00-00", "基础路径、域名");
 	private String id;
+	private String desc;
 
-	private SysConfig(String id) {
+	private SysConfig(String id, String desc) {
 		this.id = id;
+		this.desc = desc;
 	}
 
 	public String getId() {
 		return id;
+	}
+
+	public String getDesc() {
+		return desc;
 	}
 }

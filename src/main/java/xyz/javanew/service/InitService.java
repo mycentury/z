@@ -8,9 +8,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import xyz.javanew.constant.SysConfig;
 import xyz.javanew.repository.mongodb.entity.CommonRegularEntity;
 import xyz.javanew.repository.mongodb.entity.EscapeCodeEntity;
 import xyz.javanew.repository.mongodb.entity.MenuEntity;
+import xyz.javanew.repository.mongodb.entity.SysConfigEntity;
 
 @Service
 public class InitService {
@@ -175,6 +177,16 @@ public class InitService {
 		//
 		daoService.delete(null, EscapeCodeEntity.class);
 		daoService.insert(entities, EscapeCodeEntity.class);
+	}
 
+	public void initSysConfigs() {
+		List<SysConfigEntity> entities = new ArrayList<SysConfigEntity>();
+		SysConfigEntity entity = new SysConfigEntity();
+		entity.setId(SysConfig.BASE_URL.getId());
+		entity.setDesc(SysConfig.BASE_URL.getDesc());
+		entity.setValue("http://localhost:8380");
+		entities.add(entity);
+		daoService.delete(null, SysConfigEntity.class);
+		daoService.insert(entities, SysConfigEntity.class);
 	}
 }

@@ -29,10 +29,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import xyz.javanew.constant.SysConfig;
 import xyz.javanew.listener.FileUploadProgressListener.Progress;
 import xyz.javanew.service.CacheService;
 import xyz.javanew.util.FileCacheUtil;
 import xyz.javanew.util.FilePathUtil;
+import xyz.javanew.util.ImageAnalyseUtil;
 import xyz.javanew.util.ZipUtil;
 
 /**
@@ -111,7 +113,13 @@ public class FileController {
 				logger.error(file.toString() + ":" + e.getMessage());
 				continue;
 			}
-			fileInfos.add(new FileCacheUtil.FileInfo(originalName, size, tempFile, targetFile.getName()));
+			String targetName = targetFile.getName();
+			if (originalName.matches(".*[(.jpg)(.png)(.gif)]$")) {
+				targetName = ImageAnalyseUtil.generateFingerprint(targetFile);
+				targetName += originalName.substring(originalName.lastIndexOf("."));
+				targetFile.renameTo(new File(targetPath + "/" + targetName));
+			}
+			fileInfos.add(new FileCacheUtil.FileInfo(originalName, size, tempFile, targetName));
 		}
 
 		result.put("result", files.length > 0 ? "success" : "fail");
@@ -120,7 +128,7 @@ public class FileController {
 			if (i > 0) {
 				sb.append(";");
 			}
-			sb.append(cacheService.getBaseUrl(request)).append("/");
+			sb.append(cacheService.getBaseUrl(SysConfig.BASE_URL)).append("/");
 			sb.append(cacheService.getUploadFolder()).append("/").append(fileInfos.get(i).getTargetName());
 		}
 
