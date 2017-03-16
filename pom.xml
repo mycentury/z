@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>xyz.javanew</groupId>
 	<artifactId>javanew</artifactId>
-	<version>0.0.8</version>
+	<version>0.0.9</version>
 	<packaging>war</packaging>
 	<name>${artifactId}</name>
 

@@ -9,6 +9,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
@@ -59,13 +60,18 @@ public class QrcodeUtil {
 
 	private static BufferedImage createImage(QrcodeInfo qrcodeInfo) throws Exception {
 		Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
+		ErrorCorrectionLevel calculateQrcodeECL = calculateQrcodeECL(qrcodeInfo.qrcodeContent);
 		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
 		hints.put(EncodeHintType.CHARACTER_SET, DEFAULT_CHARSET);
 		hints.put(EncodeHintType.MARGIN, 1);
 		BitMatrix bitMatrix = new MultiFormatWriter().encode(qrcodeInfo.qrcodeContent, BarcodeFormat.QR_CODE, qrcodeInfo.qrcodeWidth,
 				qrcodeInfo.qrcodeHeight, hints);
+		// bitMatrix = removeWhiteSpace(bitMatrix);
 		int width = bitMatrix.getWidth();
 		int height = bitMatrix.getHeight();
+		/*
+		 * int width = qrcodeInfo.qrcodeWidth; int height = qrcodeInfo.qrcodeHeight;
+		 */
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
@@ -187,9 +193,43 @@ public class QrcodeUtil {
 			String resultStr = result.getText();
 			return resultStr;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return null;
 		}
+	}
+
+	/**
+	 * @param length
+	 * @return
+	 */
+	private static ErrorCorrectionLevel calculateQrcodeECL(String source) {
+		int length = source.getBytes(Charset.defaultCharset()).length;
+		// L(7%)-154、M(15%)-122、Q(25%)-86、H(30%)-64
+		ErrorCorrectionLevel result = ErrorCorrectionLevel.L;
+		if (length <= 64) {
+			result = ErrorCorrectionLevel.H;
+		} else if (length <= 86) {
+			result = ErrorCorrectionLevel.Q;
+		} else if (length <= 122) {
+			result = ErrorCorrectionLevel.M;
+		}
+		logger.info("内容【" + source + "】字节长度为：" + length + ",自动容错等级为：" + result);
+		return result;
+	}
+
+	private static BitMatrix removeWhiteSpace(BitMatrix matrix) {
+		int[] rec = matrix.getEnclosingRectangle();
+		int resWidth = rec[2] + 1;
+		int resHeight = rec[3] + 1;
+
+		BitMatrix resMatrix = new BitMatrix(resWidth, resHeight);
+		resMatrix.clear();
+		for (int i = 0; i < resWidth; i++) {
+			for (int j = 0; j < resHeight; j++) {
+				if (matrix.get(i + rec[0], j + rec[1])) resMatrix.set(i, j);
+			}
+		}
+		return resMatrix;
 	}
 
 	/**
@@ -212,32 +252,35 @@ public class QrcodeUtil {
 				+ "1234567890" + "1234567890" + "1234567890" + "1234567890" + "1234567890" + "1234567890" + "1234567890" + "1234567890"
 				+ "1234567890" + "1234567890" + "1234567890" + "1234567890" + "1234567890" + "1234567890" + "1234567890" + "1234567890"
 				+ "1234567890";
-		String qrcodePath = "D:\\项目读写文件\\Qrcode";
-		String logoPath = "D:\\项目读写文件\\Qrcode\\头像.png";
+		String qrcodeContent2 = "该工具出自：https://github.com/jeromeetienne/jquery-qrcode（Jquery不支持图片，这里用样式控制覆盖在上面，如果图片太大，会扫不出来）";
+		String qrcodeContent3 = "1234567890" + "1234567890";
+		String qrcodePath = "/D:/项目读写文件/Qrcode";
+		String logoPath = "/D:/项目读写文件/Qrcode/头像.png";
 		QrcodeInfo qrcodeInfo = new QrcodeInfo();
 		qrcodeInfo.setQrcodeName("temp");
-		qrcodeInfo.setQrcodeContent(qrcodeContent);
+		qrcodeInfo.setQrcodeContent(qrcodeContent3);
 		qrcodeInfo.setQrcodePath(qrcodePath);
 		qrcodeInfo.setNeedCompress(true);
-		qrcodeInfo.setLogoPath(logoPath);
-		qrcodeInfo.setQrcodeWidth(256 + 32);
-		qrcodeInfo.setQrcodeHeight(256 + 32);
-		qrcodeInfo.setLogoWidth(32);
-		qrcodeInfo.setLogoHeight(32);
-		qrcodeInfo.setMarginLeft(128);
-		qrcodeInfo.setMarginTop(128);
+		// qrcodeInfo.setLogoPath(logoPath);
+		qrcodeInfo.setQrcodeWidth(128);
+		qrcodeInfo.setQrcodeHeight(128);
+		// qrcodeInfo.setLogoWidth(32);
+		// qrcodeInfo.setLogoHeight(32);
+		// qrcodeInfo.setMarginLeft(128);
+		// qrcodeInfo.setMarginTop(128);
 		qrcodeInfo.setBackground("FFFFFF");
 		qrcodeInfo.setForeground("FF00FF");
-		// String generateQrcode = generateQrcode(qrcodeInfo);
-		// System.out.println(generateQrcode);
+		String generateQrcode = generateQrcode(qrcodeInfo);
+		System.out.println(generateQrcode);
 		// System.out.println(parseQrcode(new File(generateQrcode)));
 		// String parsePath = "D:\\项目读写文件\\Qrcode\\微信.jpg";
 		// File file = new File(parsePath);
 		// String parseQrcode = parseQrcode(file);
 		// System.out.println(parseQrcode);
-		String parsePath = "D:\\项目读写文件\\Qrcode\\weixin.png";
-		File file = new File(parsePath);
-		String parseQrcode = parseQrcode(file);
-		System.out.println(parseQrcode);
+		// String parsePath = "D:\\项目读写文件\\Qrcode\\weixin.png";
+		// File file = new File(parsePath);
+		// String parseQrcode = parseQrcode(file);
+		// System.out.println(parseQrcode);
+
 	}
 }

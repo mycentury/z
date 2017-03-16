@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta http-equiv="keywords" content="java,util,工具,在线" />
-	<div th:include="/common/meta :: meta" th:remove="tag"></div>
 	<title th:utext="#{app.name}"></title>
+	<meta name="keywords" content="java,util,工具,在线" />
+	<div th:include="/common/meta :: meta" th:remove="tag"></div>
 </head>
 <body th:with="menu='FUNCTION',subMenu='FUNCTION'" th:inline="text">
 
